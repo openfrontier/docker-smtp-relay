@@ -118,8 +118,8 @@ if expr match $1 '.*supervisord' >/dev/null; then
       exit 1
     }
     for peer in "$(cat /etc/postfix/client_sasl_passwd)"; do
-      $user=$(echo "${peer}" | awk '{ print $1 }')
-      $pass=$(echo "${peer}" | awk '{ print $2 }')
+      user=$(echo "${peer}" | awk '{ print $1 }')
+      pass=$(echo "${peer}" | awk '{ print $2 }')
       echo "${pass}" | /opt/postfix/saslpasswd2.sh -p -u "${RELAY_MYDOMAIN}" -c "${user}"
       echo "...registered user '${user}' into sasl database"
     done
