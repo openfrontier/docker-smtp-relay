@@ -117,12 +117,13 @@ if expr match $1 '.*supervisord' >/dev/null; then
       echo "client_sasl_passwd database is not readable" >&2
       exit 1
     }
-    for peer in "$(cat /etc/postfix/client_sasl_passwd)"; do
-      user=$(echo "${peer}" | awk '{ print $1 }')
-      pass=$(echo "${peer}" | awk '{ print $2 }')
-      echo "${pass}" | /opt/postfix/saslpasswd2.sh -p -u "${RELAY_MYDOMAIN}" -c "${user}"
+    while read line
+    do
+      user=$(echo "${line}" | awk '{ print $1 }')
+      pass=$(echo "${line}" | awk '{ print $2 }')
+      echo "${pass}" | /opt/postfix/saslpasswd.sh -p -c -u "${RELAY_MYDOMAIN}" "${user}"
       echo "...registered user '${user}' into sasl database"
-    done
+    done < /etc/postfix/client_sasl_passwd
   fi
   
 fi
